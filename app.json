@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7886b099-2bc6-44f5-81c6-7d4fc4464a8b"
+      }
+    },
+    "owner": "ssvmakers"
   }
 }
