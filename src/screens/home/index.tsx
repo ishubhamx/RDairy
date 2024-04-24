@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -20,6 +20,9 @@ import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import moment from "moment";
 import RnIncrementDecrementBtn from "../../Components/QuantityButton";
 import { Images } from "../../assets";
+import { supabase } from "../../Services/client";
+import 'moment/locale/hi';
+moment.locale('hi')
 // import { QuantityButton } from "../../Components/QuantityButton";
 
 const DATA = [
@@ -73,58 +76,63 @@ const DATA = [
   },
 ];
 
-type ItemProps = { title: string };
-const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
-const Item = ({ title }: ItemProps) => (
+type ItemProps = {
+  fullname: string;
+  houseno: string;
+  id: number;
+  mobile: string;
+  email: string;
+};
+const LeftContent = (props) => <Avatar.Icon {...props} icon="home" />;
+const Item = ({ fullname, houseno }: ItemProps) => (
   <Card style={styles.item}>
-    <Card.Title
-      title="Card Title"
-      subtitle="Card Subtitle"
-      left={LeftContent}
-    />
+    <Card.Title title={houseno} subtitle={fullname} left={LeftContent} />
     <Card.Content>
       <View
         style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}
       >
         <Icon size={32} source={"cow"} />
-        <RnIncrementDecrementBtn
-          styleBtn={{ marginLeft: 16 }}
-          minVal={0}
-          minreq={0}
-          max={10}
-          val={0}
-        />
+        <View style={{ marginLeft: 16 }}>
+          <RnIncrementDecrementBtn minVal={0} minreq={0} max={10} val={0} />
+        </View>
       </View>
       <View
         style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}
       >
         <Icon size={32} source={Images.buffalo} />
-        <RnIncrementDecrementBtn
-          styleBtn={{ marginLeft: 16 }}
-          minVal={0}
-          minreq={0}
-          max={10}
-          val={0}
-        />
+        <View style={{ marginLeft: 16 }}>
+          <RnIncrementDecrementBtn minVal={0} minreq={0} max={10} val={0} />
+        </View>
       </View>
     </Card.Content>
+
     <Card.Actions>
-      <Button>Cancel</Button>
-      <Button>Ok</Button>
+      <Button onPress={()=>{}} style={{borderRadius:8}} mode="text"> नहीं दिया</Button>
+      <Button  onPress={()=>{}} style={{borderRadius:4}} mode="contained">दिया</Button>
     </Card.Actions>
   </Card>
-  // <Surface style={styles.item}>
-  //   <Text style={styles.title}>{title}</Text>
-  // </Surface>
 );
 // const HeaderComponent = <CustomBottomSheetModal />;
 export const HomeScreen: FC = () => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [value, setValue] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [data, setData] = React.useState([]);
+
   const [selectedDate, setSelectedDate] = useState<string>(
-    moment().format("MMM DD, YY")
+    moment().format("MMMM DD, YY")
   );
   const { dismiss } = useBottomSheetModal();
+
+  useEffect(() => {
+    supabase
+      .from("clients")
+      .select("*")
+      .then((datad: any) => {
+        setData(datad.data);
+        console.log(datad);
+      });
+  }, []);
 
   const handlePresentModalPress = () => bottomSheetRef.current?.present();
   const onDateSelect = (date) => {
@@ -150,14 +158,14 @@ export const HomeScreen: FC = () => {
           buttons={[
             {
               value: "walk",
-              label: "Morning",
+              label: "सुबह",
               icon: "weather-sunset-up",
               // style: { backgroundColor: "#ffffff" },
             },
 
             {
               value: "drive",
-              label: "Evening",
+              label: "शाम",
               icon: "weather-sunset-down",
               // style: { backgroundColor: "#ffffff" },
             },
@@ -179,8 +187,8 @@ export const HomeScreen: FC = () => {
         ListHeaderComponent={headerComponent}
         // stickyHeaderIndices={[0]}
         contentContainerStyle={{ paddingBottom: 94 }}
-        data={DATA}
-        renderItem={({ item }) => <Item title={item.title} />}
+        data={data}
+        renderItem={({ item }) => <Item {...item} />}
         keyExtractor={(item) => item.id}
       />
       <CustomBottomSheetModal

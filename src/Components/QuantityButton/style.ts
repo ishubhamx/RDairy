@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#eeeeee",
     height: PixelRatio.roundToNearestPixel((height * 5) / 100),
-    width: PixelRatio.roundToNearestPixel((width * 8) / 100),
+    width: PixelRatio.roundToNearestPixel((width * 8) / 50),
   },
   labelStyle: {
     fontSize: 18,

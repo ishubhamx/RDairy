@@ -122,7 +122,7 @@ const RnIncrementDecrementBtn: FC<IProps> = ({
             labelStyle ? labelStyle : styles.labelStyle,
           ]}
         >
-          {value}
+          {value} ली.
         </Text>
       </View>
       <View
